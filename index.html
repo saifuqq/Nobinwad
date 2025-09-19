@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Nobin - ร้านบุหรี่นอก คุณภาพพรีเมียม ส่งตรงถึงมือคุณ 24 ชั่วโมง" />
+    <title>Nobin - ร้านบุหรี่นอก | Minimal Modern</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="src/css/styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- JavaScript -->
+    <script src="src/js/scripts.js" defer></script>
+    <script src="src/js/cart-manager.js" defer></script>
+    <script src="src/js/order-form.js" defer></script>
+    <script src="src/js/order-submission.js" defer></script>
+    <script src="src/js/order-handler.js" defer></script>
+</head>
+<body class="min-h-screen flex flex-col dark-mode">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[99999] space-y-2"></div>
+
+    <header class="p-4 bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white shadow-2xl relative z-10 border-b border-gray-800 dark-mode-bg backdrop-blur-xl">
+        <nav class="container mx-auto flex flex-col sm:flex-row items-center justify-between">
+            <!-- Logo and Shop Name - Left Aligned -->
+            <div class="flex items-center mb-4 sm:mb-0">
+                <a href="#" class="flex items-center">
+                    <!-- Logo Image with adjusted size and object-fit -->
+                     
+                    <img src="src/assets/img/Nobin บุหรี่นอก.png" alt="Nobin Logo" class="h-16 w-auto object-contain mr-3 filter drop-shadow-lg">
+                    <span class="text-4xl font-extrabold text-white whitespace-nowrap leading-none tracking-tight"> Nobin</span>
+                </a>
+            </div>
+                
+            <!-- Navigation Menu - Right Aligned -->
+            <ul class="flex flex-wrap justify-center sm:justify-end items-center gap-4">
+                <li><a href="#productGrid" onclick="selectCategory('ทั้งหมด');" class="header-nav-link text-gray-300 hover:text-white">ทั้งหมด</a></li>
+                <li><a href="#productGrid" onclick="selectCategory('สายร้อน');" class="header-nav-link text-gray-300 hover:text-white">สายร้อน</a></li>
+                <li><a href="#productGrid" onclick="selectCategory('สายหวาน / สายช็อกโกแลต');" class="header-nav-link text-gray-300 hover:text-white">สายหวาน / สายช็อกโกแลต</a></li>
+                <li><a href="#productGrid" onclick="selectCategory('สายเม็ดบีท / สายผลไม้');" class="header-nav-link text-gray-300 hover:text-white">สายเม็ดบีท / สายผลไม้</a></li>
+                <li><a href="#ai-suggestions-section" class="header-nav-link text-gray-300 hover:text-white">🤖 AI แนะนำ</a></li>
+                <li><a href="#customer-reviews-section" class="header-nav-link text-gray-300 hover:text-white">⭐ รีวิวลูกค้า</a></li>
+                <li>
+                    <!-- Dark Mode Toggle -->
+                    <button id="darkModeToggle" class="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full shadow-md transition duration-200 ease-in-out" title="Toggle dark mode">
+                        <span id="darkModeIcon">🌙</span>
+                    </button>
+                </li>
+                <!-- Shopping Cart Button -->
+                <li>
+                    <button id="cartButton" onclick="toggleCart()" class="bg-pink-600 hover:bg-pink-700 text-white p-3 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-110" title="ดูตะกร้าสินค้า">
+                        <span class="relative inline-flex items-center">
+                            🛒
+                            <span id="cartItemCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center transition-all duration-300 opacity-0 scale-0">0</span>
+                        </span>
+                    </button>
+                </li>
+                <li>
+                    <!-- Admin Profile Icon -->
+                    <div onclick="showAdminLogin()" class="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full shadow-md cursor-pointer transition duration-200 ease-in-out">
+                        <span class="text-xl">👨‍💻</span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section relative h-screen flex items-center justify-center overflow-hidden">
+        <!-- Hero Background -->
+        <video 
+            autoplay 
+            muted 
+            loop 
+            class="hero-video absolute inset-0 w-full h-full object-cover"
+            playsinline
+        >
+            <source src="src/assets/video/01.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="hero-overlay absolute inset-0 w-full h-full bg-black/40"></div>
+
+        <!-- Hero Content -->
+        <div class="hero-content fade-in-section relative z-10 text-center p-4 max-w-4xl mx-auto">
+            <!-- Main Headings -->
+            <h2 class="text-4xl sm:text-4xl md:text-5xl font-extrabold leading-tight mb-4 text-white drop-shadow-xl font-inter">
+                <span class="inline-block bg-white/10 backdrop-blur-md rounded-2xl px-6 py-2 mb-2 animate-fade-in">
+                    ✅ เปิดรับออเดอร์ 24 ชม.
+                </span>
+                <br>
+                <span class="inline-block bg-gradient-to-tr from-pink-500 to-red-400 text-transparent bg-clip-text animate-gradient-x">
+                    📣 ส่งจริง ส่งไว รีวิวเพียบ 📣
+                </span>
+                <br>
+                <span class="inline-block bg-white/10 backdrop-blur-md rounded-2xl px-4 py-1 mt-2 animate-fade-in">
+                    🙏🏻 แพ็คของส่งวันต่อวัน
+                </span>
+            </h2>
+
+            <!-- Subheading -->
+            <p class="text-lg sm:text-xl md:text-2xl text-gray-200 mb-8 font-sarabun bg-black/30 rounded-xl px-6 py-3 inline-block shadow-xl animate-fade-in">
+                💥 สินค้ายอดฮิต ขายดีที่สุดเป็นประจำวัน 💥<br>
+                <span class="text-pink-300">สายเย็น สายหวาน สายร้อน สายเม็ดบีด</span>
+            </p>
+
+            <!-- CTA Button -->
+            <button 
+                onclick="scrollToProducts()" 
+                class="btn-primary text-white font-bold py-3 px-8 rounded-full text-xl transform hover:scale-105 transition-transform duration-200"
+            >
+                <span class="inline-flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    กดสั่งสินค้า
+                </span>
+            </button>
+        </div>
+    </section>
+
+    <main id="main-content" class="flex-grow container mx-auto p-4 dark-mode-bg light-mode-bg-white text-gray-100 light-mode-text-gray-800">
+        <!-- Product Category Grid -->
+        <section class="my-12 fade-in-section">
+            <h3 class="text-3xl font-extrabold text-center mb-8 text-gradient bg-gradient-to-tr from-pink-500 to-red-400 text-transparent bg-clip-text drop-shadow-lg">เลือกซื้อตามหมวดหมู่</h3>
+            <div id="categoryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Category cards will be rendered here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- The existing category tabs will remain here for detailed filtering -->
+        <div id="categoryTabs" class="flex flex-wrap justify-center gap-3 mb-8 overflow-x-auto pb-2">
+            <!-- Category tabs will be rendered here by JavaScript -->
+        </div>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="ค้นหาสินค้า..."
+            class="w-full p-3 rounded-xl mb-8 focus:outline-none shadow-lg border border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-gray-900/70 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-pink-400 transition"
+            oninput="filterProducts()"
+        />
+
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <!-- Product Card Template -->
+            <template id="productCardTemplate">
+                <div class="product-card group bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                    <!-- Product Image -->
+                    <div class="relative aspect-w-1 aspect-h-1 overflow-hidden">
+                        <img src="" alt="" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                    
+                    <!-- Product Info -->
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white"></h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm mb-3"></p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-pink-600"></span>
+                            <button onclick="" class="add-to-cart-btn bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transform transition-transform duration-200 hover:scale-105 flex items-center space-x-2">
+                                <span>เพิ่มลงตะกร้า</span>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- AI-powered Smart UX Section -->
+        <section id="ai-suggestions-section" class="my-16 fade-in-section">
+            <h3 class="text-3xl font-extrabold text-center mb-8 text-gradient bg-gradient-to-tr from-blue-400 to-pink-400 text-transparent bg-clip-text drop-shadow-lg">🤖 แนะนำสำหรับคุณ (AI Suggests)</h3>
+            <div id="aiSuggestionsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <!-- AI suggested product cards will be rendered here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Highlight Section -->
+        <section class="my-16 fade-in-section">
+            <h3 class="text-3xl font-extrabold text-center mb-8 text-gradient bg-gradient-to-tr from-yellow-400 to-pink-400 text-transparent bg-clip-text drop-shadow-lg">ไฮไลท์จากร้านเรา</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Customer Reviews Card -->
+                <div class="ai-suggestion-card p-6 flex flex-col items-center text-center">
+                    <span class="text-5xl mb-4">🌟</span>
+                    <h4 class="text-2xl font-bold mb-3">รีวิวจากลูกค้า</h4>
+                    <p class="text-gray-400 italic mb-4">"บริการดีเยี่ยม สินค้าคุณภาพดี ส่งเร็วทันใจ!"</p>
+                    <button onclick="showReviewsSection()" class="mt-4 btn-info px-6 py-2 rounded-full text-lg">ดูรีวิวทั้งหมด</button>
+                </div>
+                <!-- Promotion Card -->
+                <div class="ai-suggestion-card p-6 flex flex-col items-center text-center">
+                    <span class="text-5xl mb-4">🎁</span>
+                    <h4 class="text-2xl font-bold mb-3">โปรโมชั่นพิเศษ!</h4>
+                    <p class="text-gray-400 mb-4">ซื้อครบ 1,000 บาท รับส่วนลดทันที 50 บาท!</p>
+                    <button class="btn-primary px-6 py-2 rounded-full text-lg">ดูโปรโมชั่น</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customer Reviews Section -->
+        <section id="customer-reviews-section" class="my-16 fade-in-section">
+            <h3 class="text-3xl font-extrabold text-center mb-8 text-gradient bg-gradient-to-tr from-green-400 to-blue-400 text-transparent bg-clip-text drop-shadow-lg">รีวิวจากลูกค้าของเรา</h3>
+            <div class="flex justify-center mb-8">
+                <button onclick="showReviewSubmissionModal()" class="btn-primary px-6 py-3 rounded-full text-lg">
+                    เขียนรีวิว
+                </button>
+            </div>
+            <div id="reviewsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Customer review cards will be rendered here by JavaScript -->
+            </div>
+            <div id="noReviewsMessage" class="text-center text-gray-600 mt-8 hidden">
+                <span>ยังไม่มีรีวิวในขณะนี้</span>
+            </div>
+        </section>
+
+        <!-- Cart functionality has been removed -->
+                ยังไม่มีรีวิวในขณะนี้ คุณสามารถเป็นคนแรกที่เขียนรีวิว!
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-gray-400 py-8 mt-auto border-t border-gray-800 dark-mode-bg light-mode-bg-lightgray light-mode-text-gray-600">
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+                <h4 class="text-xl font-bold text-white mb-4">Nobin - ร้านบุหรี่นอก</h4>
+                <p>แหล่งรวมบุหรี่นอกคุณภาพพรีเมียม</p>
+                <p>ส่งตรงถึงมือคุณ 24 ชั่วโมง</p>
+            </div>
+            <div>
+                <h4 class="text-xl font-bold text-white mb-4">ติดต่อเรา</h4>
+                <p>โทร: 081-XXX-XXXX</p>
+                <p>อีเมล: info@nobin.com</p>
+                <p>ที่อยู่: 123 ถนนสุขุมวิท, กรุงเทพฯ</p>
+            </div>
+            <div>
+                <h4 class="text-xl font-bold text-white mb-4">เชื่อมต่อกับเรา</h4>
+                <div class="flex justify-center md:justify-start space-x-4">
+                    <a href="https://www.facebook.com/share/1JURZdnYdo/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white text-2xl transition-colors duration-200">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" class="h-8 w-8 filter invert dark:filter-none">
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white text-2xl transition-colors duration-200">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/LINE_New_App_Icon_%282020-12%29.png/500px-LINE_New_App_Icon_%282020-12%29.png" alt="Instagram" class="h-8 w-8 filter invert dark:filter-none">
+                    </a>
+                </div>
+                <p class="mt-4">LINE ID: @nobinshop</p>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8">
+            &copy; 2024 Nobin - ร้านบุหรี่นอก. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden transition-opacity duration-300">
+        <div id="cartContent" class="fixed right-0 top-0 h-full w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl transform transition-transform duration-300 ease-in-out translate-x-full">
+            <!-- Cart Header -->
+            <div class="flex items-center justify-between p-4 border-b dark:border-gray-700">
+                <h2 class="text-2xl font-bold flex items-center space-x-2">
+                    <span>🛒</span>
+                    <span>ตะกร้าสินค้า</span>
+                </h2>
+                <button onclick="toggleCart()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Cart Items -->
+            <div id="cartItems" class="overflow-y-auto flex-1" style="max-height: calc(100vh - 200px);">
+                <!-- Items will be inserted here by JavaScript -->
+            </div>
+
+            <!-- Shipping Form -->
+            <div id="shippingForm" class="hidden border-t dark:border-gray-700 p-4 bg-white dark:bg-gray-900">
+                <h3 class="text-xl font-bold mb-4 text-center">ขั้นตอนที่ 2: กรอกข้อมูลการจัดส่ง</h3>
+                <form id="orderForm" class="space-y-4" onsubmit="return false;">
+                    <!-- ชื่อ-นามสกุล -->
+                    <div>
+                        <label for="customerName" class="block text-sm font-semibold mb-2">
+                            ชื่อ-นามสกุล <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="customerName" required
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            placeholder="กรุณากรอกชื่อ-นามสกุล">
+                    </div>
+                    
+                    <!-- เบอร์โทรศัพท์ -->
+                    <div>
+                        <label for="customerPhone" class="block text-sm font-semibold mb-2">
+                            เบอร์โทรศัพท์ <span class="text-red-500">*</span>
+                        </label>
+                        <input type="tel" id="customerPhone" required pattern="[0-9]{10}"
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            placeholder="เบอร์โทรศัพท์ 10 หลัก"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <p class="text-xs text-gray-500 mt-1">ตัวอย่าง: 0812345678</p>
+                    </div>
+                    
+                    <!-- ที่อยู่ -->
+                    <div>
+                        <label for="customerAddress" class="block text-sm font-semibold mb-2">
+                            ที่อยู่ <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="customerAddress" required rows="3"
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            placeholder="กรุณากรอกที่อยู่สำหรับจัดส่ง"></textarea>
+                    </div>
+
+                    <!-- ยอดรวมสินค้า -->
+                    <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold">ยอดรวมสินค้า:</span>
+                            <span id="formCartTotal" class="text-2xl font-bold text-pink-600">0 บาท</span>
+                        </div>
+                    </div>
+
+                    <!-- ปุ่มดำเนินการ -->
+                    <div class="flex gap-3 pt-4">
+                        <button type="button" onclick="validateAndConfirmOrder()" 
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
+                            <span>ยืนยันการสั่งซื้อ</span>
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </button>
+                        <button type="button" onclick="cancelOrder()"
+                            class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                            ยกเลิก
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Cart Footer -->
+            <div id="cartFooter" class="border-t dark:border-gray-700 p-4 bg-white dark:bg-gray-900 shadow-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-semibold">ยอดรวม:</span>
+                    <span id="cartTotal" class="text-2xl font-bold text-pink-600">0 บาท</span>
+                </div>
+                <!-- Cart Actions -->
+                <div class="flex gap-3">
+                    <button onclick="showShippingForm()" 
+                        id="checkoutButton"
+                        class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span>ดำเนินการสั่งซื้อ</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- System Dialogs -->
+    <div id="customAlertDialog" class="fixed inset-0 bg-black/70 hidden justify-center items-center z-[9999] p-4">
+        <div class="modal-body modal-content-animation p-6 w-full max-w-sm relative text-center">
+            <h3 id="alertDialogTitle" class="text-xl font-bold text-red-500 mb-4"></h3>
+            <p id="alertDialogMessage" class="mb-6 light-mode-text-gray-800"></p>
+            <button onclick="closeAlertDialog()" class="btn-primary px-6 py-2 rounded-lg text-lg">ตกลง</button>
+        </div>
+    </div>
+
+    <!-- Order Confirmation Dialog -->
+    <div id="orderConfirmDialog" class="fixed inset-0 bg-black/70 hidden justify-center items-center z-[9999] p-4">
+        <div class="modal-body modal-content-animation p-6 w-full max-w-lg relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl">
+            <h3 class="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-white">ยืนยันการสั่งซื้อ</h3>
+            <div class="space-y-4">
+                <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                    <h4 class="font-bold mb-2 text-gray-800 dark:text-white">ข้อมูลการจัดส่ง</h4>
+                    <div id="confirmOrderDetails" class="space-y-2 text-gray-600 dark:text-gray-300"></div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                    <h4 class="font-bold mb-2 text-gray-800 dark:text-white">รายการสินค้า</h4>
+                    <div id="confirmOrderItems" class="space-y-2 text-gray-600 dark:text-gray-300"></div>
+                    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-gray-800 dark:text-white">ยอดรวมทั้งหมด:</span>
+                            <span id="confirmOrderTotal" class="text-2xl font-bold text-pink-600">0 บาท</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="submitFinalOrder()" 
+                    class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
+                    <span>ยืนยันการสั่งซื้อ</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </button>
+                <button onclick="closeOrderConfirmDialog()"
+                    class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                    ยกเลิก
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Interface -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/70 hidden justify-center items-center z-50 p-4">
+        <div class="modal-body modal-content-animation p-6 w-full max-w-sm relative text-center">
+            <h2 class="modal-header text-2xl font-bold mb-6">เข้าสู่ระบบผู้ดูแล</h2>
+            <input type="password" id="adminPassword" placeholder="รหัสผ่าน" class="w-full mb-4">
+            <button onclick="adminLogin()" class="w-full btn-primary py-2 rounded-lg text-lg">เข้าสู่ระบบ</button>
+            <button onclick="toggleAdminLoginModal()" class="w-full mt-3 btn-secondary py-2 rounded-lg text-lg">ยกเลิก</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanelModal" class="fixed inset-0 bg-black/70 hidden justify-center items-center z-50 p-4">
+        <!-- Admin Dashboard Section -->
+        <div id="adminDashboard" class="px-8 pt-8 pb-2 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-2xl font-bold mb-4 text-pink-600">แดชบอร์ดผู้ดูแล</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center">
+                    <span class="text-4xl mb-2">📦</span>
+                    <div class="text-lg font-bold">จำนวนสินค้าทั้งหมด</div>
+                    <div id="dashboardTotalProducts" class="text-2xl font-extrabold text-pink-500">-</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center">
+                    <span class="text-4xl mb-2">👤</span>
+                    <div class="text-lg font-bold">ลูกค้าทั้งหมด (mock)</div>
+                    <div id="dashboardTotalCustomers" class="text-2xl font-extrabold text-blue-500">-</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+                    <div class="font-bold mb-2">สินค้าขายดี (mock)</div>
+                    <ul id="dashboardBestSellers" class="list-disc pl-5 text-gray-700 dark:text-gray-200 text-sm"></ul>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+                    <div class="font-bold mb-2">ลูกค้าใหม่ล่าสุด (mock)</div>
+                    <ul id="dashboardRecentCustomers" class="list-disc pl-5 text-gray-700 dark:text-gray-200 text-sm"></ul>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body modal-content-animation p-0 w-full max-w-3xl relative overflow-y-auto max-h-[92vh] custom-scrollbar bg-gradient-to-br from-gray-50 via-white to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-2xl rounded-2xl border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between px-8 pt-8 pb-2 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-tr from-red-500 to-pink-400 text-white shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.657-1.343-3-3-3s-3 1.343-3 3 1.343 3 3 3 3-1.343 3-3zm0 0c0-1.657 1.343-3 3-3s3 1.343 3 3-1.343 3-3 3-3-1.343-3-3zm0 0v2m0 4h.01" /></svg>
+                    </span>
+                    <h2 class="modal-header text-3xl font-extrabold tracking-tight text-gray-800 dark:text-white">แผงควบคุมผู้ดูแล</h2>
+                </div>
+                <button onclick="toggleAdminPanelModal()" class="transition hover:scale-110 active:scale-95 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full p-2 shadow hover:bg-red-100 hover:text-red-600 focus:outline-none" title="ปิด">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <div class="px-8 pt-4 pb-2">
+                <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                    <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" /></svg>
+                        รายการสินค้า
+                    </h3>
+                    <div class="flex flex-wrap gap-2 items-center">
+                        <button onclick="showEditProductModal('new')" class="transition bg-gradient-to-tr from-pink-500 to-red-400 hover:from-red-500 hover:to-pink-400 text-white px-5 py-2 rounded-xl shadow font-semibold text-md flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                            เพิ่มสินค้าใหม่
+                        </button>
+                        <button onclick="exportProducts()" class="transition bg-gradient-to-tr from-yellow-400 to-yellow-600 hover:from-yellow-600 hover:to-yellow-400 text-white px-5 py-2 rounded-xl shadow font-semibold text-md flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 4h8v8H8V8z" /></svg>
+                            ส่งออกสินค้า
+                        </button>
+                        <button onclick="showBulkImportModal()" class="transition bg-gradient-to-tr from-green-400 to-green-600 hover:from-green-600 hover:to-green-400 text-white px-5 py-2 rounded-xl shadow font-semibold text-md flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                            นำเข้าสินค้า (Bulk)
+                        </button>
+                        <button type="button" onclick="openBulkCheckModal()" class="transition bg-gradient-to-tr from-blue-400 to-blue-600 hover:from-blue-600 hover:to-blue-400 text-white px-4 py-2 rounded-xl shadow font-semibold text-sm flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            เช็คสินค้า
+                        </button>
+                        <button type="button" onclick="openBulkAddModal()" class="transition bg-gradient-to-tr from-green-400 to-green-600 hover:from-green-600 hover:to-green-400 text-white px-4 py-2 rounded-xl shadow font-semibold text-sm flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h6v6m-3-6V7m0 0V7" /></svg>
+                            เพิ่มสินค้าทั้งหมด
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="adminProductListByCategory" class="space-y-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar px-8 pb-8">
+            <!-- Bulk Import Modal -->
+            <div id="bulkImportModal" class="fixed inset-0 bg-black/70 hidden justify-center items-center z-[99999] p-4">
+                <div class="modal-body modal-content-animation p-6 w-full max-w-lg relative text-center">
+                    <h3 class="text-2xl font-bold mb-4">นำเข้าสินค้า (Bulk Import)</h3>
+                    <textarea id="bulkImportTextarea" rows="8" class="w-full mb-4 p-2 rounded border" placeholder="วางข้อมูลสินค้า (JSON หรือ CSV)"></textarea>
+                    <div class="flex flex-wrap gap-2 justify-center mt-2">
+                        <button type="button" onclick="confirmBulkImport()" class="btn-success px-6 py-2 rounded-lg text-md">นำเข้า</button>
+                        <button type="button" onclick="closeBulkImportModal()" class="btn-secondary px-6 py-2 rounded-lg text-md">ยกเลิก</button>
+                    </div>
+                </div>
+            </div>
+                <!-- Admin product list will be rendered here (JS) -->
+                <!-- ปุ่มแก้ไข/ลบสินค้าแต่ละรายการจะถูก render ด้วย JS -->
+            </div>
+
+            <!-- Admin Product Edit Modal -->
+            <div id="adminEditProductModal" class="fixed inset-0 bg-black/70 hidden justify-center items-center z-[99999] p-4">
+                <div class="modal-body modal-content-animation p-6 w-full max-w-lg relative text-center">
+                    <h3 class="text-2xl font-bold mb-4" id="editProductModalTitle">เพิ่ม/แก้ไขสินค้า</h3>
+                    <form id="adminEditProductForm" class="space-y-4">
+                        <input type="text" id="editProductName" class="w-full p-2 rounded border" placeholder="ชื่อสินค้า" required>
+                        <input type="text" id="editProductType" class="w-full p-2 rounded border" placeholder="ชนิด/รส (ถ้ามี)">
+                        <input type="number" id="editProductPrice" class="w-full p-2 rounded border" placeholder="ราคา" min="0" required>
+                        <textarea id="editProductDesc" class="w-full p-2 rounded border" placeholder="รายละเอียดเพิ่มเติม"></textarea>
+                        <div class="flex flex-wrap gap-2 justify-center mt-2">
+                            <button type="submit" class="btn-success px-6 py-2 rounded-lg text-md">บันทึก</button>
+                            <button type="button" onclick="closeEditProductModal()" class="btn-secondary px-6 py-2 rounded-lg text-md">ยกเลิก</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
+
+            <div class="flex justify-end px-8 pb-8">
+                <button onclick="toggleAdminPanelModal()" class="transition bg-gradient-to-tr from-gray-400 to-gray-600 hover:from-gray-600 hover:to-gray-400 text-white px-6 py-2 rounded-xl shadow font-semibold text-lg flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    ปิด
+                </button>
+            </div>
+            <div id="bulkCheckModal" class="fixed inset-0 bg-black/70 hidden justify-center items-center z-[9999] p-4">
+                <div class="modal-body modal-content-animation p-6 w-full max-w-lg relative text-center">
+                    <h3 class="text-2xl font-bold mb-4">วางข้อความสินค้า (เช็คสินค้า)</h3>
+                    <textarea id="bulkCheckTextarea" rows="10" class="w-full mb-4 p-2 rounded border" placeholder="วางข้อความสินค้าหลายรายการที่นี่"></textarea>
+                    <div id="bulkCheckPreview" class="mb-4 text-xs text-gray-400"></div>
+                    <div class="flex flex-wrap gap-2 justify-center">
+                        <button type="button" onclick="previewBulkCheckProducts()" class="btn-info px-4 py-2 rounded-lg text-md">แสดงตัวอย่าง</button>
+                        <button type="button" onclick="confirmBulkCheckProducts()" id="confirmBulkCheckBtn" class="btn-success px-4 py-2 rounded-lg text-md">เช็คสินค้าสำเร็จ</button>
+                        <button type="button" onclick="closeBulkCheckModal()" class="btn-secondary px-4 py-2 rounded-lg text-md">ยกเลิก</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+
+            <div id="adminProductListByCategory" class="space-y-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                <!-- Bulk Product Input removed as requested -->
+                <!-- Admin product list will be rendered here -->
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div id="editProductModal" class="fixed inset-0 bg-black/70 hidden justify-center items-center z-50 p-4">
+        <div class="modal-body modal-content-animation p-6 w-full max-w-md relative overflow-y-auto max-h-[90vh] custom-scrollbar">
+            <h2 id="editProductModalTitle" class="modal-header text-3xl font-bold text-center mb-6">แก้ไขสินค้า</h2>
+            <form id="editProductForm" onsubmit="event.preventDefault(); saveProduct();">
+                <input type="hidden" id="editProductCategory" />
+                <input type="hidden" id="editProductIndex" />
+
+                <div class="mb-4">
+                    <label for="editBaseName" class="block text-sm font-bold mb-2 light-mode-text-gray-700">ชื่อสินค้า:</label>
+                    <input type="text" id="editBaseName" class="w-full" required>
+                </div>
+                <div class="mb-4">
+                    <label for="editImgUrl" class="block text-sm font-bold mb-2 light-mode-text-gray-700">URL รูปภาพ:</label>
+                    <input type="url" id="editImgUrl" class="w-full">
+                </div>
+                <div class="mb-4">
+                    <label for="editCategory" class="block text-sm font-bold mb-2 light-mode-text-gray-700">หมวดหมู่:</label>
+                    <select id="editCategory" class="w-full">
+                        <!-- Categories will be populated by JS -->
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="editDescription" class="block text-sm font-bold mb-2 light-mode-text-gray-700">รายละเอียดสินค้า:</label>
+                    <textarea id="editDescription" rows="3" class="w-full"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-2 light-mode-text-gray-700">สถานะสต็อก:</label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="editInStock" class="form-checkbox h-5 w-5 text-red-500 rounded focus:ring-red-500">
+                        <span class="ml-2 light-mode-text-gray-700">มีสินค้าในสต็อก</span>
+                    </label>
+                </div>
+
+                <h3 class="text-xl font-semibold mb-3 mt-6 light-mode-text-gray-800">ชนิดสินค้า (Variants)</h3>
+                <div id="editVariantsContainer" class="space-y-3 p-3 rounded-lg border dark-mode-bg-gray-800 dark-mode-border-gray-700 light-mode-bg-gray-100 light-mode-border-gray-200">
+                    <!-- Variants will be dynamically added here -->
+                </div>
+                <!-- Bulk Product Input (Paste Text) for Edit/Add Modal -->
+                <!-- Bulk Product Input Modal removed as requested -->
+                <button type="button" onclick="addVariantField()" class="mt-4 btn-primary px-3 py-1 rounded-lg text-sm">
+                    + เพิ่มชนิด
+                </button>
+
+                <div class="flex justify-end gap-4 mt-6">
+                    <button type="submit" class="btn-success px-4 py-2 rounded-lg text-lg">บันทึก</button>
+                    <button type="button" onclick="toggleEditProductModal()" class="btn-secondary px-4 py-2 rounded-lg text-lg">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div id="productDetailModal" class="fixed inset-0 bg-black/70 hidden justify-center items-center z-50 p-4">
+        <div class="modal-body modal-content-animation p-6 w-full max-w-2xl relative overflow-y-auto max-h-[90vh] custom-scrollbar">
+            <button onclick="toggleProductDetailModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white text-3xl font-bold modal-close-btn">&times;</button>
+            <div id="productDetailContent" class="flex flex-col md:flex-row gap-6">
+                <div class="md:w-1/2">
+                    <img id="detailProductImage" src="" alt="Product Image" class="w-full rounded-lg mb-4 shadow-lg" onerror="this.onerror=null;this.src='https://placehold.co/400x300/333333/FFFFFF?text=No+Image';" />
+                    <!-- Placeholder for multiple images -->
+                    <div class="flex gap-2 mt-2 justify-center">
+                        <img src="https://placehold.co/80x60/444444/FFFFFF?text=View+1" class="w-20 h-15 rounded-md cursor-pointer border-2 border-transparent hover:border-red-600 transition" alt="Product View 1">
+                        <img src="https://placehold.co/80x60/444444/FFFFFF?text=View+2" class="w-20 h-15 rounded-md cursor-pointer border-2 border-transparent hover:border-red-600 transition" alt="Product View 2">
+                        <img src="https://placehold.co/80x60/444444/FFFFFF?text=View+3" class="w-20 h-15 rounded-md cursor-pointer border-2 border-transparent hover:border-red-600 transition" alt="Product View 3">
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <h2 id="detailProductName" class="text-3xl font-bold text-red-500 mb-4"></h2>
+                    <p id="detailProductDescription" class="mb-4 light-mode-text-gray-700">
+                        รายละเอียดสินค้า: บุหรี่คุณภาพเยี่ยมจาก Nobin คัดสรรมาเพื่อคุณโดยเฉพาะ
+                        ให้ประสบการณ์การสูบที่นุ่มนวลและกลิ่นหอมเป็นเอกลักษณ์
+                    </p>
+
+                    <div id="detailProductVariants" class="mb-4">
+                        <!-- Variants will be rendered here -->
+                    </div>
+
+                    <p id="detailProductPrice" class="text-2xl font-bold text-green-500 mb-4"></p>
+
+                    <div class="mb-4 p-3 rounded-lg border dark-mode-bg-gray-800 dark-mode-border-gray-700 light-mode-bg-gray-100 light-mode-border-gray-200">
+                        <p class="font-semibold mb-2 light-mode-text-gray-700">รีวิวจากลูกค้า:</p>
+                        <div class="flex items-center text-yellow-400 text-xl mb-2">
+                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>☆</span> (4.0)
+                        </div>
+                        <p class="text-sm italic light-mode-text-gray-600">"สินค้าดีมาก ส่งเร็วทันใจ!" - ลูกค้า A</p>
+                        <p class="text-sm italic light-mode-text-gray-600">"ชอบกลิ่นนี้มากค่ะ" - ลูกค้า B</p>
+                    </div>
+
+                    <div class="mb-6 p-3 rounded-lg border dark-mode-bg-gray-800 dark-mode-border-gray-700 light-mode-bg-gray-100 light-mode-border-gray-200">
+                        <p class="font-semibold mb-2 light-mode-text-gray-700">คำแนะนำจากผู้ใช้:</p>
+                        <ul class="list-disc list-inside text-sm light-mode-text-gray-600">
+                            <li>เหมาะสำหรับผู้ที่ชื่นชอบกลิ่นหอมหวาน</li>
+                            <li>ควรเก็บในที่แห้งและเย็น</li>
+                        </ul>
+                    </div>
+
+                    <!-- Cart functionality has been removed -->
+                    <button onclick="toggleProductDetailModal()" class="w-full mt-3 btn-secondary py-3 rounded-lg text-lg">
+                        ปิด
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Submission Modal -->
+    <div id="reviewSubmissionModal" class="fixed inset-0 bg-black/70 hidden justify-center items-center z-50 p-4">
+        <div class="modal-body modal-content-animation p-6 w-full max-w-md relative overflow-y-auto max-h-[90vh] custom-scrollbar">
+            <h2 class="modal-header text-3xl font-bold text-center mb-6">เขียนรีวิวของคุณ</h2>
+            <form id="reviewForm" onsubmit="event.preventDefault(); submitReview();">
+                <div class="mb-4">
+                    <label for="reviewerName" class="block text-sm font-bold mb-2 light-mode-text-gray-700">ชื่อของคุณ:</label>
+                    <input type="text" id="reviewerName" class="w-full" required>
+                </div>
+                <div class="mb-4">
+                    <label for="reviewComment" class="block text-sm font-bold mb-2 light-mode-text-gray-700">ความคิดเห็นของคุณ:</label>
+                    <textarea id="reviewComment" rows="4" class="w-full" required></textarea>รหัสlineNotifyOrder.gs
+                </div>
+                <div class="mb-4">
+                    <label for="reviewImage" class="block text-sm font-bold mb-2 light-mode-text-gray-700">อัปโหลดรูปภาพ (ไม่บังคับ):</label>
+                    <input type="file" id="reviewImage" accept="image/*" class="w-full p-2 border rounded light-mode-bg-white dark-mode-bg-gray-700 dark-mode-text-white light-mode-text-gray-800">
+                    <p class="text-xs text-gray-500 mt-1">ไฟล์รูปภาพ (JPG, PNG) ไม่เกิน 2MB</p>
+                </div>
+                <div class="flex justify-end gap-4 mt-6">
+                    <button type="submit" class="btn-success px-4 py-2 rounded-lg text-lg">ส่งรีวิว</button>
+                    <button type="button" onclick="toggleReviewSubmissionModal()" class="btn-secondary px-4 py-2 rounded-lg text-lg">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Cart Button -->
+    <button id="floatingCartButton" onclick="toggleCart()" class="fixed bottom-4 right-4 bg-pink-600 hover:bg-pink-700 text-white p-4 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center space-x-2 z-50">
+        <span class="relative inline-flex items-center">
+            🛒
+            <span id="floatingCartItemCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center transition-all duration-300 opacity-0 scale-0">0</span>
+        </span>
+        <span class="text-sm font-semibold hidden md:inline">ดูตะกร้าสินค้า</span>
+    </button>
+
+    <!-- Application Scripts -->
+    <script src="scripts.js"></script>
+
+    <!-- Initialize Application -->
+    <script>
+        // เริ่มต้นแอปพลิเคชันเมื่อโหลดเสร็จ
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+    </script>
+</body>
+</html>
